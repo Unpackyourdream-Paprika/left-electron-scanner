@@ -408,7 +408,7 @@ export default function useSocket(url: string) {
   });
 
   const [startFlagState, setStartFlagState] = useState<StartFlagData>({
-    start: false,
+    start: true,
     customerid: 0,
   });
 

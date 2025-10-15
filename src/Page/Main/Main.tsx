@@ -7,6 +7,8 @@ import TopStatusBar from "../../components/dashboard/TopStatusBar";
 import LeftSection from "../../components/dashboard/LeftSection";
 import CenterSection from "../../components/dashboard/CenterSection";
 import RightSection from "../../components/dashboard/RightSection";
+import MainTopSection from "./MainTopSection";
+import MainCenterSection from "./MainCenterSection";
 
 const Main = () => {
   const {
@@ -230,19 +232,19 @@ const Main = () => {
   // console.log(controlStateData, "controlStateData?????");
 
   return (
-    <div className="relative w-full h-[450px] bg-black">
+    <div className="relative w-full h-[630px] bg-[#303030]">
       {startFlagState.start ? (
         <>
-          <TopStatusBar
+          {/* <TopStatusBar
             navigationState={navigationState}
             // mobileActiveState={mobileActiveState}
-          />
+          /> */}
           <div
             className={`${
               starting ? "opacity-1" : "opacity-0"
-            } w-[85%] mx-auto h-full flex justify-between items-center transition-all duration-500`}
+            } w-full mx-auto h-full  transition-all duration-500`}
           >
-            <LeftSection
+            {/* <LeftSection
               navigationState={navigationState}
               controlStateData={controlStateData}
               mobileActiveState={mobileActiveState}
@@ -255,6 +257,17 @@ const Main = () => {
             <RightSection
               navigationState={navigationState}
               mobileActiveState={mobileActiveState}
+            /> */}
+
+            <MainTopSection
+              navigationState={navigationState}
+              mobileActiveState={mobileActiveState}
+              controlStateData={controlStateData}
+            />
+            <MainCenterSection
+              navigationState={navigationState}
+              mobileActiveState={mobileActiveState}
+              controlStateData={controlStateData}
             />
           </div>
         </>
