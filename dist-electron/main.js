@@ -26,6 +26,33 @@ function createWindow() {
       preload: path.join(__dirname, "preload.mjs")
     }
   });
+  const initialSize = win.getSize();
+  const initialPosition = win.getPosition();
+  console.log("=== Electron Window Initial Info ===");
+  console.log(`Width: ${initialSize[0]}px`);
+  console.log(`Height: ${initialSize[1]}px`);
+  console.log(`Position: (${initialPosition[0]}, ${initialPosition[1]})`);
+  console.log("====================================");
+  win.on("move", () => {
+    if (!win) return;
+    const position = win.getPosition();
+    const size = win.getSize();
+    const bounds = win.getBounds();
+    console.log("\n=== Window Moved ===");
+    console.log(`Position: (${position[0]}, ${position[1]})`);
+    console.log(`Size: ${size[0]}x${size[1]}`);
+    console.log(`Bounds: { x: ${bounds.x}, y: ${bounds.y}, width: ${bounds.width}, height: ${bounds.height} }`);
+    console.log("===================");
+  });
+  win.on("resize", () => {
+    if (!win) return;
+    const size = win.getSize();
+    const bounds = win.getBounds();
+    console.log("\n=== Window Resized ===");
+    console.log(`New Size: ${size[0]}x${size[1]}`);
+    console.log(`Bounds: { x: ${bounds.x}, y: ${bounds.y}, width: ${bounds.width}, height: ${bounds.height} }`);
+    console.log("=====================");
+  });
   win.webContents.on("did-finish-load", () => {
     win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
   });

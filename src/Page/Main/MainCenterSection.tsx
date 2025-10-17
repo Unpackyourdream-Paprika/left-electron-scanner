@@ -18,11 +18,13 @@ const MainCenterSection = ({
   // 속도 값 (0~200 범위)
   const speed = navigationState.velocityData.velocity; // TODO: navigationState에서 실제 속도 가져오기
 
+  // const speed = 100; // TODO: navigationState에서 실제 속도 가져오기
+
   // 속도를 회전 각도로 변환 (-135deg ~ +135deg = 270도 회전)
   const speedToRotation = (speed: number) => {
     const maxSpeed = 200;
     const minAngle = -135; // 시작 각도
-    const maxAngle = 135;  // 끝 각도
+    const maxAngle = 135; // 끝 각도
     const clampedSpeed = Math.max(0, Math.min(speed, maxSpeed));
     return minAngle + (clampedSpeed / maxSpeed) * (maxAngle - minAngle);
   };
@@ -108,7 +110,7 @@ const MainCenterSection = ({
         <div className="relative flex items-center justify-center w-[370px] h-[370px]">
           <img
             className="absolute inset-0 object-contain w-full h-full"
-            src={"/assets/gauge_img.png"}
+            src={"/assets/w_3circle_speedometer_ice.png"}
             alt="중앙 게이지"
           />
           <img
@@ -121,11 +123,12 @@ const MainCenterSection = ({
             <div
               className="absolute w-1 h-[178px] bg-white origin-bottom rounded-full"
               style={{
-                bottom: 'calc(50% - 18px)',
+                bottom: "calc(50% - 18px)",
                 transform: `rotate(${speedToRotation(speed)}deg)`,
-                transition: 'transform 500ms ease-out',
+                transition: "transform 500ms ease-out",
                 zIndex: 50,
-                background: 'linear-gradient(to top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.6) 70%, rgba(255,255,255,1) 100%)'
+                background:
+                  "linear-gradient(to top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.6) 70%, rgba(255,255,255,1) 100%)",
               }}
             />
           </div>
@@ -135,8 +138,8 @@ const MainCenterSection = ({
             </span>
             <span className="text-[28px] text-[#8B8B8B]">km/h</span>
           </div>
-          <div className="absolute inset-0 flex items-center justify-center ">
-            <div className="relative w-[360px] h-[360px]">
+          <div className="absolute flex items-center justify-center top-1 ">
+            <div className="relative w-[370px] h-[370px]">
               <img
                 src={"/assets/gauge_center_bar.png"}
                 alt="중앙 속도 정보"
