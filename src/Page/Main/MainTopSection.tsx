@@ -16,13 +16,13 @@ const MainTopSection = ({
   controlStateData,
 }: MainTopSectionProps) => {
   return (
-    <div className="w-full h-[142px] bg-black flex justify-center items-end gap-[220px] relative">
+    <div className="w-full h-[142px] bg-black flex justify-center items-end gap-[280px] relative">
       <img
         src="/handle/adas_summary.png"
         alt="left-light-img.png"
-        className="absolute -translate-x-[180px] z-50"
+        className="absolute -translate-x-[200px] z-50 w-[100px]"
       />
-      <p className="absolute z-50 text-[#0064FF] font-bold text-[32px] -translate-x-[90px] -translate-y-3">
+      <p className="absolute z-50 text-[#0064FF] font-bold text-[42px] -translate-x-[100px] -translate-y-3">
         100
       </p>
       {/* <img src="/handle/adas_left.png" alt="ind_door_state.png" /> */}
@@ -30,15 +30,15 @@ const MainTopSection = ({
       <img
         src="/assets/ind_lka_state.png"
         alt="ind_lka_state.png"
-        className="z-50"
+        className="z-50 w-[80px]"
       />
-      <p className="text-white text-[54px] font-semibold z-50">
+      <p className="text-white text-[64px] font-semibold z-50">
         {navigationState.velocityData.gear}
       </p>
       <img
         src="/assets/right-light-img.png"
         alt="right-light-img.png"
-        className="z-50"
+        className="z-50 w-[80px]"
       />
       {/* <img src="/top/bar_red.png" className="absolute z-1" /> */}
       {/* <img src="/top/HDA4-bar-two.png" className="absolute z-1" /> */}
