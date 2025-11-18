@@ -9,6 +9,7 @@ import CenterSection from "../../components/dashboard/CenterSection";
 import RightSection from "../../components/dashboard/RightSection";
 import MainTopSection from "./MainTopSection";
 import MainCenterSection from "./MainCenterSection";
+import { initialDynamicData } from "../../types/initDataTypes";
 
 const Main = () => {
   const {
@@ -27,6 +28,8 @@ const Main = () => {
     setDrivingModeState,
     setAutoParkState,
     setMobileActiveState,
+    dynamicData,
+    setDynamicData,
   } = useSocket(
     // "http://192.168.1.12:4000"
     // "http://192.168.10.101:4000"
@@ -223,7 +226,7 @@ const Main = () => {
     setFcaState({
       fcaStatus: "",
     });
-
+    setDynamicData(initialDynamicData);
     resetAllStores();
   };
 
@@ -263,11 +266,13 @@ const Main = () => {
               navigationState={navigationState}
               mobileActiveState={mobileActiveState}
               controlStateData={controlStateData}
+              dynamicData={dynamicData}
             />
             <MainCenterSection
               navigationState={navigationState}
               mobileActiveState={mobileActiveState}
               controlStateData={controlStateData}
+              dynamicData={dynamicData}
             />
           </div>
         </>

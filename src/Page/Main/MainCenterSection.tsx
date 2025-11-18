@@ -2,21 +2,24 @@ import {
   NavigationData,
   MobileStateData,
   ControlStateType,
+  DynamicDataType,
 } from "../../hooks/useSocket";
 
 interface MainCenterSectionProps {
   navigationState: NavigationData;
   mobileActiveState: MobileStateData;
   controlStateData: ControlStateType;
+  dynamicData: DynamicDataType;
 }
 
 const MainCenterSection = ({
   navigationState,
   mobileActiveState,
   controlStateData,
+  dynamicData,
 }: MainCenterSectionProps) => {
   // 속도 값 (0~200 범위)
-  const speed = navigationState.velocityData.velocity; // TODO: navigationState에서 실제 속도 가져오기
+  const speed = dynamicData.Velocity; // TODO: navigationState에서 실제 속도 가져오기
 
   // const speed = 100; // TODO: navigationState에서 실제 속도 가져오기
 
@@ -173,7 +176,9 @@ const MainCenterSection = ({
               ECO
             </span>
             <div className="flex flex-col items-center gap-2 mt-[60px]">
-              <span className="text-white text-[48px] font-semibold">2.5</span>
+              <span className="text-white text-[48px] font-semibold">
+                {dynamicData.RPM}
+              </span>
               <span className="text-[18px]  text-[#8B8B8B]">x1000rpm</span>
             </div>
           </div>
