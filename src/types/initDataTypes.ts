@@ -2,7 +2,7 @@ import { DynamicDataType } from "../hooks/useSocket";
 
 export const initialDynamicData: DynamicDataType = {
   // ===== HDA/ADAS 제어 =====
-  EnableHDA2: true,
+  EnableHDA2: false,
   EnableHDA4: false,
   LFA: false,
   SCC: false,
