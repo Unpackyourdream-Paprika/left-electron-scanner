@@ -17,14 +17,18 @@ const MainTopSection = ({
   mobileActiveState,
   controlStateData,
   dynamicData,
+
+
 }: MainTopSectionProps) => {
+
+
   return (
     <div className="w-full h-[142px] bg-black flex justify-center items-end gap-[280px] relative">
       {dynamicData.EnableHDA4 && (
         <img
           src="/handle/adas_summary.png"
           alt="left-light-img.png"
-          className="absolute -translate-x-[200px] z-50 w-[100px]"
+          className="absolute -translate-x-[80px] z-50 w-[100px]"
         />
       )}
       {dynamicData.EnableHDA2 && (
@@ -40,7 +44,7 @@ const MainTopSection = ({
             ? "text-[#06BA15]"
             : dynamicData.EnableHDA4
             ? "text-[#0064FF]"
-            : "text-transparent"
+            : "text-white"
         }`}
       >
         {dynamicData.SCCTargetActorSpeed}
