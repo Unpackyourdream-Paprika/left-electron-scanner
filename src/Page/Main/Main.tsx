@@ -235,7 +235,7 @@ const Main = () => {
   // console.log(controlStateData, "controlStateData?????");
 
   return (
-    <div className="relative w-full h-[630px] bg-[#303030]">
+    <div className="relative w-full h-[630px] bg-[#303030] mt-[440px]">
       {startFlagState.start ? (
         <>
           {/* <TopStatusBar
