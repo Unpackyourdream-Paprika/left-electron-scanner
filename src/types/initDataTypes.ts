@@ -91,7 +91,7 @@ export const initialDynamicData: DynamicDataType = {
   AutonomousBrakePush: false,
   NDRT: false,
   speedDeviationEnable: false,
-  IgnitionStatus: false,
+  IgnitionStatus: true,
 
   // ===== 이벤트 레벨 =====
   eorLevel: 0,

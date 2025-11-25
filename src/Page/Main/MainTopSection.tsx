@@ -4,6 +4,7 @@ import {
   ControlStateType,
   DynamicDataType,
 } from "../../hooks/useSocket";
+import { useState, useEffect } from "react";
 
 interface MainTopSectionProps {
   navigationState: NavigationData;
@@ -16,6 +17,17 @@ const MainTopSection = ({
   dynamicData,
 }: MainTopSectionProps) => {
 
+  // horLevel 애니메이션을 위한 상태
+  const [horAnimationToggle, setHorAnimationToggle] = useState(false);
+
+  // 500ms마다 토글
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHorAnimationToggle((prev) => !prev);
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // etc_signal 값에 따른 이미지 경로 결정
   const getSignalImage = () => {
@@ -26,13 +38,13 @@ const MainTopSection = ({
     return null;
   };
 
-  // horLevel 값에 따른 이미지 경로 결정
+  // horLevel 값에 따른 이미지 경로 결정 (애니메이션 적용)
   const getHorLevelImage = () => {
     const horLevel = dynamicData.horLevel;
     if (horLevel === 1) {
-      return "/handle/hor-1.png";
+      return horAnimationToggle ? "/handle/hor-1.png" : "/handle/hor-2.png";
     } else if (horLevel === 2) {
-      return "/handle/hor2-2.png";
+      return horAnimationToggle ? "/handle/hor2-1.png" : "/handle/hor2-2.png";
     }
     return null;
   };
