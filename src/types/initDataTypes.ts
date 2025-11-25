@@ -89,4 +89,16 @@ export const initialDynamicData: DynamicDataType = {
   TotalLaneNum: 0,
   AutonomousAccelPush: false,
   AutonomousBrakePush: false,
+  NDRT: false,
+  speedDeviationEnable: false,
+  IgnitionStatus: false,
+
+  // ===== 이벤트 레벨 =====
+  eorLevel: 0,
+  horLevel: 0,
+  dcaLevel: 0,
+  rmfLevel: 0,
+
+  // ===== 차선별 차량 정보 =====
+  lanes: [],
 };

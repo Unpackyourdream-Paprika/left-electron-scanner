@@ -93,6 +93,18 @@ export interface DynamicDataType {
   TotalLaneNum: number; // 총 차선 수 - byte(1) 🔴
   AutonomousAccelPush: boolean; // 자율주행 중 액셀 페달 누름 여부 - bool(1) 🔴
   AutonomousBrakePush: boolean; // 자율주행 중 브레이크 페달 누름 여부 - bool(1) 🔴
+  NDRT: boolean; // NDRT 상태 - bool(1)
+  speedDeviationEnable: boolean; // 속도 편차 활성화 여부 - bool(1)
+  IgnitionStatus: boolean; // 점화 상태 - bool(1)
+
+    // 이벤트 레벨
+  eorLevel: number;
+  horLevel: number;
+  dcaLevel: number;
+  rmfLevel: number;
+
+  // ===== 차선별 차량 정보 =====
+  lanes: LaneData[]; // 이미 정의된 인터페이스 사용!
 }
 
 export interface PopupData {

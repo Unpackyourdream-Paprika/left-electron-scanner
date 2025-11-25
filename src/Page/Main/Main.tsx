@@ -15,7 +15,6 @@ const Main = () => {
   const {
     navigationState,
     mobileActiveState,
-    startFlagState,
     controlStateData,
     setControlStateData,
     setNavigationState,
@@ -38,22 +37,22 @@ const Main = () => {
 
   const [starting, setStarting] = useState(false);
 
-  // startFlagState가 변경될 때만 starting 상태를 업데이트
+  // IgnitionStatus가 변경될 때만 starting 상태를 업데이트
   useEffect(() => {
-    if (startFlagState.start) {
+    if (dynamicData.IgnitionStatus) {
       setStarting(true);
     } else {
       setStarting(false);
     }
-  }, [startFlagState.start]);
+  }, [dynamicData.IgnitionStatus]);
 
   // 초기화 작업은 별도의 useEffect로 분리
   useEffect(() => {
-    // 시작 상태가 아닐 때만 초기화 로직 실행
-    if (!startFlagState.start) {
+    // 시동이 꺼졌을 때만 초기화 로직 실행
+    if (!dynamicData.IgnitionStatus) {
       resetAllStates();
     }
-  }, [startFlagState.start]);
+  }, [dynamicData.IgnitionStatus]);
 
   // 상태 초기화 함수
   const resetAllStates = () => {
@@ -236,7 +235,7 @@ const Main = () => {
 
   return (
     <div className="relative w-full h-[630px] bg-[#303030] mt-[440px]">
-      {startFlagState.start ? (
+      {dynamicData.IgnitionStatus ? (
         <>
           {/* <TopStatusBar
             navigationState={navigationState}
