@@ -235,49 +235,43 @@ const Main = () => {
 
   return (
     <div className="relative w-full h-[630px] bg-[#303030] mt-[440px]">
-      {dynamicData.IgnitionStatus ? (
-        <>
-          {/* <TopStatusBar
-            navigationState={navigationState}
-            // mobileActiveState={mobileActiveState}
-          /> */}
-          <div
-            className={`${
-              starting ? "opacity-1" : "opacity-0"
-            } w-full mx-auto h-full  transition-all duration-500`}
-          >
-            {/* <LeftSection
-              navigationState={navigationState}
-              controlStateData={controlStateData}
-              mobileActiveState={mobileActiveState}
-            />
-            <CenterSection
-              navigationState={navigationState}
-              mobileActiveState={mobileActiveState}
-              controlStateData={controlStateData}
-            />
-            <RightSection
-              navigationState={navigationState}
-              mobileActiveState={mobileActiveState}
-            /> */}
+      {/* <TopStatusBar
+        navigationState={navigationState}
+        // mobileActiveState={mobileActiveState}
+      /> */}
+      <div
+        className={`${
+          starting && dynamicData.IgnitionStatus ? "opacity-1" : "opacity-0"
+        } w-full mx-auto h-full  transition-all duration-500`}
+      >
+        {/* <LeftSection
+          navigationState={navigationState}
+          controlStateData={controlStateData}
+          mobileActiveState={mobileActiveState}
+        />
+        <CenterSection
+          navigationState={navigationState}
+          mobileActiveState={mobileActiveState}
+          controlStateData={controlStateData}
+        />
+        <RightSection
+          navigationState={navigationState}
+          mobileActiveState={mobileActiveState}
+        /> */}
 
-            <MainTopSection
-              navigationState={navigationState}
-              mobileActiveState={mobileActiveState}
-              controlStateData={controlStateData}
-              dynamicData={dynamicData}
-            />
-            <MainCenterSection
-              navigationState={navigationState}
-              mobileActiveState={mobileActiveState}
-              controlStateData={controlStateData}
-              dynamicData={dynamicData}
-            />
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
+        <MainTopSection
+          navigationState={navigationState}
+          mobileActiveState={mobileActiveState}
+          controlStateData={controlStateData}
+          dynamicData={dynamicData}
+        />
+        <MainCenterSection
+          navigationState={navigationState}
+          mobileActiveState={mobileActiveState}
+          controlStateData={controlStateData}
+          dynamicData={dynamicData}
+        />
+      </div>
     </div>
   );
 };

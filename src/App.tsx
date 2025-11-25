@@ -6,11 +6,13 @@ const App = () => {
   // console.log(speed, "speed?");
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Main />} />
-      </Routes>
-    </Router>
+    <div className="w-screen h-screen drag-area">
+      <Router>
+        <Routes>
+          <Route path="/" element={<Main />} />
+        </Routes>
+      </Router>
+    </div>
   );
 };
 

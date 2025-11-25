@@ -78,7 +78,7 @@ const MainCenterSection = ({
           </span>
           <div className="relative z-10 w-full h-full">
             <div className="absolute top-1/2 left-[34px] w-[104px] h-[104px] -translate-y-1/2">
-              <div className="relative w-full h-full">
+              {/* <div className="relative w-full h-full">
                 <img
                   className="absolute inset-0 w-full h-full"
                   src={"/assets/isla_preset_speed.png"}
@@ -89,7 +89,7 @@ const MainCenterSection = ({
                     100
                   </span>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="absolute top-1/2 left-1/2 w-[100px] h-[100px] -translate-x-1/2 -translate-y-1/2">
               <div className="relative w-full h-full">
