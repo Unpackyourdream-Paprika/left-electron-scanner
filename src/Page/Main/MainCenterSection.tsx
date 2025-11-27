@@ -37,7 +37,7 @@ const MainCenterSection = ({
       <div className="w-full max-w-[1440px] h-full flex items-center justify-between">
         <div className="relative flex items-center justify-center w-[370px] h-[370px]">
           <img
-            className="absolute inset-0 object-contain w-full h-full brightness-[0.7]"
+            className="absolute inset-0 object-contain w-full h-full brightness-[0.5]"
             src={"/assets/gauge_img.png"}
             alt="왼쪽 게이지"
           />
@@ -112,7 +112,7 @@ const MainCenterSection = ({
         </div>
         <div className="relative flex items-center justify-center w-[370px] h-[370px]">
           <img
-            className="absolute inset-0 object-contain w-full h-full"
+            className="absolute inset-0 object-contain w-full h-full brightness-[0.5]"
             src={"/assets/w_3circle_speedometer_ice.png"}
             alt="중앙 게이지"
           />
@@ -153,7 +153,7 @@ const MainCenterSection = ({
         </div>
         <div className="relative flex items-center justify-center w-[370px] h-[370px]">
           <img
-            className="absolute inset-0 object-contain w-full h-full"
+            className="absolute inset-0 object-contain w-full h-full brightness-[0.5]"
             src={"/assets/gauge_img.png"}
             alt="오른쪽 게이지"
           />

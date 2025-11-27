@@ -20,6 +20,26 @@ const MainTopSection = ({
   // horLevel 애니메이션을 위한 상태
   const [horAnimationToggle, setHorAnimationToggle] = useState(false);
 
+  // 모든 레벨이 0인지 확인
+  const allLevelsZero = dynamicData.rmfLevel === 0 &&
+    dynamicData.dcaLevel === 0 &&
+    dynamicData.horLevel === 0 &&
+    dynamicData.eorLevel === 0;
+
+  // left-auto 조건
+  const showLeftAuto = dynamicData.EnableHDA4 &&
+    allLevelsZero &&
+    dynamicData.bEnableChangeLaneToLeft &&
+    dynamicData.bReadyForChangeLane &&
+    dynamicData.lcDirection === 1;
+
+  // right-auto 조건
+  const showRightAuto = dynamicData.EnableHDA4 &&
+    allLevelsZero &&
+    dynamicData.bEnableChangeLaneToRight &&
+    dynamicData.bReadyForChangeLane &&
+    dynamicData.lcDirection === 2;
+
   // 500ms마다 토글
   useEffect(() => {
     const interval = setInterval(() => {
@@ -72,8 +92,26 @@ const MainTopSection = ({
         />
       )}
 
-      {/* HDA4가 활성화되고 horLevel, etc_signal, rmfLevel 조건이 아닐 때만 표시 */}
-      {dynamicData.EnableHDA4 && !horLevelImage && !signalImage && dynamicData.rmfLevel < 1 && (
+      {/* left-auto: EnableHDA4 && 모든 레벨 0 && 차선변경 조건 충족 */}
+      {showLeftAuto && !horLevelImage && !signalImage && (
+        <img
+          src="/handle/left-auto.png"
+          alt="left-auto"
+          className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-5"
+        />
+      )}
+
+      {/* right-auto: EnableHDA4 && 모든 레벨 0 && 차선변경 조건 충족 */}
+      {showRightAuto && !horLevelImage && !signalImage && (
+        <img
+          src="/handle/right-auto.png"
+          alt="right-auto"
+          className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-5"
+        />
+      )}
+
+      {/* HDA4가 활성화되고 horLevel, etc_signal, rmfLevel 조건이 아니고, left/right auto 아닐 때만 표시 */}
+      {dynamicData.EnableHDA4 && !horLevelImage && !signalImage && dynamicData.rmfLevel < 1 && !showLeftAuto && !showRightAuto && (
         <img
           src="/handle/adas_summary.png"
           alt="left-light-img.png"
@@ -141,11 +179,15 @@ const MainTopSection = ({
         <img src="/top/bar_red.png" className="absolute z-1" />
       )}
 
-      {/* HDA4가 활성화되고 DCA, RMF 레벨이 1 미만일 때만 표시 */}
-      {dynamicData.EnableHDA4 && dynamicData.dcaLevel < 1 && dynamicData.rmfLevel < 1 && (
-        <img src="/top/HDA4-bar-two.png" className="absolute z-1" />
+      {/* HDA4가 활성화되고 DCA, RMF 레벨이 1 미만이고 etc_signal이 특정 값이 아닐 때만 표시 */}
+      {dynamicData.EnableHDA4 && dynamicData.dcaLevel < 1 && dynamicData.rmfLevel < 1 &&
+        ![21, 31, 41, 51, 81].includes(dynamicData.etc_signal) && (
+          <img src="/top/HDA4-bar-two.png" className="absolute z-1" />
+        )}
+      {/* EnableHDA4이고 etc_signal이 21, 31, 41, 51, 81일 때 표시 */}
+      {dynamicData.EnableHDA4 && [21, 31, 41, 51, 81].includes(dynamicData.etc_signal) && (
+        <img src="/top/hda-bar.png" className="absolute z-1 w-full" />
       )}
-      {/* <img src="/top/hda-bar.png" className="absolute z-1" /> */}
     </div>
   );
 };
