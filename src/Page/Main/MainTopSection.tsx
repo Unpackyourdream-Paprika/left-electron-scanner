@@ -17,8 +17,21 @@ const MainTopSection = ({
   dynamicData,
 }: MainTopSectionProps) => {
 
-  // horLevel 애니메이션을 위한 상태
-  const [horAnimationToggle, setHorAnimationToggle] = useState(false);
+  // hda-bar 5초 지연 표시를 위한 상태
+  const [showHdaBar, setShowHdaBar] = useState(false);
+
+  // bReadyForChangeLane이 true -> false로 변경되었는지 추적
+  const [wasReadyAndNowFalse, setWasReadyAndNowFalse] = useState(false);
+
+  // 깜빡이 사운드 재생을 위한 ref
+  const indicatorAudioRef = useState<HTMLAudioElement | null>(() => {
+    if (typeof window !== 'undefined') {
+      const audio = new Audio('/audio/IONIQ5_Indicator_Sound.WAV');
+      audio.loop = true;
+      return audio;
+    }
+    return null;
+  })[0];
 
   // 모든 레벨이 0인지 확인
   const allLevelsZero = dynamicData.rmfLevel === 0 &&
@@ -40,31 +53,69 @@ const MainTopSection = ({
     dynamicData.bReadyForChangeLane &&
     dynamicData.lcDirection === 2;
 
-  // 500ms마다 토글
+  // etc_signal이 특정 값이면 5초 후에 hda-bar 표시
   useEffect(() => {
-    const interval = setInterval(() => {
-      setHorAnimationToggle((prev) => !prev);
-    }, 500);
+    if (dynamicData.EnableHDA4 && [21, 31, 41, 51, 81].includes(dynamicData.etc_signal)) {
+      const timer = setTimeout(() => {
+        setShowHdaBar(true);
+      }, 5000);
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearTimeout(timer);
+    } else {
+      setShowHdaBar(false);
+    }
+  }, [dynamicData.EnableHDA4, dynamicData.etc_signal]);
+
+  // bReadyForChangeLane이 true에서 false로 변경되는 시점 감지
+  useEffect(() => {
+    const currentReady = dynamicData.bReadyForChangeLane;
+
+    // 이전에는 true였고 현재 false면 wasReadyAndNowFalse를 true로 설정
+    if (!currentReady && wasReadyAndNowFalse === false) {
+      // bReadyForChangeLane이 한번이라도 true였다가 false가 된 경우
+      setWasReadyAndNowFalse(true);
+    } else if (currentReady) {
+      // 다시 true가 되면 리셋 (다음 변화를 감지하기 위해)
+      setWasReadyAndNowFalse(false);
+    }
+  }, [dynamicData.bReadyForChangeLane, wasReadyAndNowFalse]);
+
+  // lcDirection이 0이 아닐 때 깜빡이 사운드 재생
+  useEffect(() => {
+    if (indicatorAudioRef && dynamicData.lcDirection !== 0) {
+      indicatorAudioRef.play().catch(error => {
+        console.log('Audio play failed:', error);
+      });
+    } else if (indicatorAudioRef && dynamicData.lcDirection === 0) {
+      indicatorAudioRef.pause();
+      indicatorAudioRef.currentTime = 0;
+    }
+  }, [dynamicData.lcDirection, indicatorAudioRef]);
 
   // etc_signal 값에 따른 이미지 경로 결정
   const getSignalImage = () => {
     const signalValue = dynamicData.etc_signal;
+
+    // bReadyForChangeLane이 true -> false로 변경된 경우 adas_summary.png 반환
+    if (wasReadyAndNowFalse && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
+      return "/handle/adas_summary.png";
+    }
+
+    // 일반적인 경우 signal-2.png 반환
     if (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61) {
       return "/handle/signal-2.png";
     }
+
     return null;
   };
 
-  // horLevel 값에 따른 이미지 경로 결정 (애니메이션 적용)
+  // horLevel 값에 따른 이미지 경로 결정
   const getHorLevelImage = () => {
     const horLevel = dynamicData.horLevel;
     if (horLevel === 1) {
-      return horAnimationToggle ? "/handle/hor-1.png" : "/handle/hor-2.png";
+      return "/handle/hor-2.png";
     } else if (horLevel === 2) {
-      return horAnimationToggle ? "/handle/hor2-1.png" : "/handle/hor2-2.png";
+      return "/handle/hor2-2.png";
     }
     return null;
   };
@@ -88,7 +139,7 @@ const MainTopSection = ({
         <img
           src={signalImage}
           alt="signal-img"
-          className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-[22px]"
+          className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-[4px]"
         />
       )}
 
@@ -135,7 +186,7 @@ const MainTopSection = ({
             ? "text-[#06BA15]"
             : dynamicData.EnableHDA4
               ? "text-[#0064FF]"
-              : "text-white"
+              : "text-black"
             }`}
         >
           100
@@ -143,7 +194,7 @@ const MainTopSection = ({
       )}
 
       {/* 왼쪽 깜빡이 */}
-      {dynamicData.LeftLamp && (
+      {dynamicData.lcDirection === 1 && (
         <img
           src="/arrow/left-sign.svg"
           alt="left-turn-signal"
@@ -166,7 +217,7 @@ const MainTopSection = ({
       />
 
       {/* 오른쪽 깜빡이 */}
-      {dynamicData.RightLamp && (
+      {dynamicData.lcDirection === 2 && (
         <img
           src="/arrow/right-sign.svg"
           alt="right-turn-signal"
@@ -184,8 +235,8 @@ const MainTopSection = ({
         ![21, 31, 41, 51, 81].includes(dynamicData.etc_signal) && (
           <img src="/top/HDA4-bar-two.png" className="absolute z-1" />
         )}
-      {/* EnableHDA4이고 etc_signal이 21, 31, 41, 51, 81일 때 표시 */}
-      {dynamicData.EnableHDA4 && [21, 31, 41, 51, 81].includes(dynamicData.etc_signal) && (
+      {/* EnableHDA4이고 etc_signal이 21, 31, 41, 51, 81일 때 5초 후 표시 */}
+      {showHdaBar && (
         <img src="/top/hda-bar.png" className="absolute z-1 w-full" />
       )}
     </div>

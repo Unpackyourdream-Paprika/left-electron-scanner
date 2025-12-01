@@ -100,7 +100,7 @@ const MainCenterSection = ({
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-[32px] font-semibold text-[#ff3939] drop-shadow-[0_0_12px_rgba(255,57,57,0.45)]">
-                    50
+                    100
                   </span>
                 </div>
               </div>
