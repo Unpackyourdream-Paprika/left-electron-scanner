@@ -70,15 +70,15 @@ const MainTopSection = ({
     }
   }, [dynamicData.EnableHDA4, dynamicData.etc_signal]);
 
-  // lcProgressBar가 0에서 100으로, 100에서 0으로 변경되는 시점 감지
+  // lcProgressBar가 0에서 100이상으로, 100이상에서 0으로 변경되는 시점 감지
   useEffect(() => {
     const currentProgress = dynamicData.lcProgressBar;
 
-    // 이전 값이 0이고 현재 값이 100이면 lcCompleted를 false로 설정
-    if (prevLcProgressBar === 0 && currentProgress === 100) {
+    // 이전 값이 0이고 현재 값이 100 이상이면 lcCompleted를 false로 설정
+    if (prevLcProgressBar === 0 && currentProgress >= 100) {
       setLcCompleted(false);
-    } else if (prevLcProgressBar === 100 && currentProgress === 0) {
-      // 100에서 0으로 돌아가면 HDA4-bar-two 다시 표시, lcCompleted를 true로 설정
+    } else if (prevLcProgressBar >= 100 && currentProgress === 0) {
+      // 100 이상에서 0으로 돌아가면 HDA4-bar-two 다시 표시, lcCompleted를 true로 설정
       setLcCompleted(true);
       setShowHda4BarTwo(true);
       setShowHdaBar(false);
