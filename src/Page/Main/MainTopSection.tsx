@@ -20,13 +20,17 @@ const MainTopSection = ({
   // hda-bar 5초 지연 표시를 위한 상태
   const [showHdaBar, setShowHdaBar] = useState(false);
 
-  // bReadyForChangeLane이 true -> false로 변경되었는지 추적
-  const [wasReadyAndNowFalse, setWasReadyAndNowFalse] = useState(false);
+  // HDA4-bar-two 표시 상태 (showHdaBar가 true가 되기 전까지 유지)
+  const [showHda4BarTwo, setShowHda4BarTwo] = useState(true);
+
+  // lcProgressBar가 100이 되었는지 추적
+  const [lcProgressBarReached100, setLcProgressBarReached100] = useState(false);
+  const [prevLcProgressBar, setPrevLcProgressBar] = useState(0);
 
   // 깜빡이 사운드 재생을 위한 ref
   const indicatorAudioRef = useState<HTMLAudioElement | null>(() => {
     if (typeof window !== 'undefined') {
-      const audio = new Audio('/audio/IONIQ5_Indicator_Sound.WAV');
+      const audio = new Audio('/audio/tictok.wav');
       audio.loop = true;
       return audio;
     }
@@ -42,43 +46,44 @@ const MainTopSection = ({
   // left-auto 조건
   const showLeftAuto = dynamicData.EnableHDA4 &&
     allLevelsZero &&
-    dynamicData.bEnableChangeLaneToLeft &&
-    dynamicData.bReadyForChangeLane &&
     dynamicData.lcDirection === 1;
 
   // right-auto 조건
   const showRightAuto = dynamicData.EnableHDA4 &&
     allLevelsZero &&
-    dynamicData.bEnableChangeLaneToRight &&
-    dynamicData.bReadyForChangeLane &&
     dynamicData.lcDirection === 2;
 
-  // etc_signal이 특정 값이면 5초 후에 hda-bar 표시
+  // etc_signal이 특정 값이면 5초 후에 hda-bar 표시, HDA4-bar-two 숨김
   useEffect(() => {
     if (dynamicData.EnableHDA4 && [21, 31, 41, 51, 81].includes(dynamicData.etc_signal)) {
       const timer = setTimeout(() => {
         setShowHdaBar(true);
+        setShowHda4BarTwo(false);
       }, 5000);
 
       return () => clearTimeout(timer);
     } else {
       setShowHdaBar(false);
+      setShowHda4BarTwo(true);
     }
   }, [dynamicData.EnableHDA4, dynamicData.etc_signal]);
 
-  // bReadyForChangeLane이 true에서 false로 변경되는 시점 감지
+  // lcProgressBar가 0에서 100으로, 100에서 0으로 변경되는 시점 감지
   useEffect(() => {
-    const currentReady = dynamicData.bReadyForChangeLane;
+    const currentProgress = dynamicData.lcProgressBar;
 
-    // 이전에는 true였고 현재 false면 wasReadyAndNowFalse를 true로 설정
-    if (!currentReady && wasReadyAndNowFalse === false) {
-      // bReadyForChangeLane이 한번이라도 true였다가 false가 된 경우
-      setWasReadyAndNowFalse(true);
-    } else if (currentReady) {
-      // 다시 true가 되면 리셋 (다음 변화를 감지하기 위해)
-      setWasReadyAndNowFalse(false);
+    // 이전 값이 0이고 현재 값이 100이면 lcProgressBarReached100을 true로 설정
+    if (prevLcProgressBar === 0 && currentProgress === 100) {
+      setLcProgressBarReached100(true);
+    } else if (prevLcProgressBar === 100 && currentProgress === 0) {
+      // 100에서 0으로 돌아가면 HDA4-bar-two 다시 표시
+      setLcProgressBarReached100(false);
+      setShowHda4BarTwo(true);
+      setShowHdaBar(false);
     }
-  }, [dynamicData.bReadyForChangeLane, wasReadyAndNowFalse]);
+
+    setPrevLcProgressBar(currentProgress);
+  }, [dynamicData.lcProgressBar, prevLcProgressBar]);
 
   // lcDirection이 0이 아닐 때 깜빡이 사운드 재생
   useEffect(() => {
@@ -96,8 +101,13 @@ const MainTopSection = ({
   const getSignalImage = () => {
     const signalValue = dynamicData.etc_signal;
 
-    // bReadyForChangeLane이 true -> false로 변경된 경우 adas_summary.png 반환
-    if (wasReadyAndNowFalse && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
+    // lcDirection이 1 또는 2일 때는 signalImage 반환하지 않음 (left-auto, right-auto가 표시되도록)
+    if (dynamicData.lcDirection === 1 || dynamicData.lcDirection === 2) {
+      return null;
+    }
+
+    // lcProgressBar가 0 -> 100으로 변경된 경우 adas_summary.png 반환
+    if (lcProgressBarReached100 && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
       return "/handle/adas_summary.png";
     }
 
@@ -139,7 +149,7 @@ const MainTopSection = ({
         <img
           src={signalImage}
           alt="signal-img"
-          className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-[4px]"
+          className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-[22px]"
         />
       )}
 
@@ -230,11 +240,10 @@ const MainTopSection = ({
         <img src="/top/bar_red.png" className="absolute z-1" />
       )}
 
-      {/* HDA4가 활성화되고 DCA, RMF 레벨이 1 미만이고 etc_signal이 특정 값이 아닐 때만 표시 */}
-      {dynamicData.EnableHDA4 && dynamicData.dcaLevel < 1 && dynamicData.rmfLevel < 1 &&
-        ![21, 31, 41, 51, 81].includes(dynamicData.etc_signal) && (
-          <img src="/top/HDA4-bar-two.png" className="absolute z-1" />
-        )}
+      {/* HDA4가 활성화되고 DCA, RMF 레벨이 1 미만이고, showHda4BarTwo가 true일 때 표시 */}
+      {dynamicData.EnableHDA4 && dynamicData.dcaLevel < 1 && dynamicData.rmfLevel < 1 && showHda4BarTwo && (
+        <img src="/top/HDA4-bar-two.png" className="absolute z-1" />
+      )}
       {/* EnableHDA4이고 etc_signal이 21, 31, 41, 51, 81일 때 5초 후 표시 */}
       {showHdaBar && (
         <img src="/top/hda-bar.png" className="absolute z-1 w-full" />
