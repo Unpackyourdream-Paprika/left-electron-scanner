@@ -23,9 +23,11 @@ const MainTopSection = ({
   // HDA4-bar-two 표시 상태 (showHdaBar가 true가 되기 전까지 유지)
   const [showHda4BarTwo, setShowHda4BarTwo] = useState(true);
 
-  // lcProgressBar가 100이 되었는지 추적
-  const [lcProgressBarReached100, setLcProgressBarReached100] = useState(false);
+  // lcProgressBar 이전 값 추적
   const [prevLcProgressBar, setPrevLcProgressBar] = useState(0);
+
+  // lcProgressBar가 100 -> 0으로 완료되었는지 추적 (adas_summary.png 표시용)
+  const [lcCompleted, setLcCompleted] = useState(false);
 
   // 깜빡이 사운드 재생을 위한 ref
   const indicatorAudioRef = useState<HTMLAudioElement | null>(() => {
@@ -72,12 +74,12 @@ const MainTopSection = ({
   useEffect(() => {
     const currentProgress = dynamicData.lcProgressBar;
 
-    // 이전 값이 0이고 현재 값이 100이면 lcProgressBarReached100을 true로 설정
+    // 이전 값이 0이고 현재 값이 100이면 lcCompleted를 false로 설정
     if (prevLcProgressBar === 0 && currentProgress === 100) {
-      setLcProgressBarReached100(true);
+      setLcCompleted(false);
     } else if (prevLcProgressBar === 100 && currentProgress === 0) {
-      // 100에서 0으로 돌아가면 HDA4-bar-two 다시 표시
-      setLcProgressBarReached100(false);
+      // 100에서 0으로 돌아가면 HDA4-bar-two 다시 표시, lcCompleted를 true로 설정
+      setLcCompleted(true);
       setShowHda4BarTwo(true);
       setShowHdaBar(false);
     }
@@ -106,13 +108,13 @@ const MainTopSection = ({
       return null;
     }
 
-    // lcProgressBar가 0 -> 100으로 변경된 경우 adas_summary.png 반환
-    if (lcProgressBarReached100 && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
+    // lcProgressBar가 100 -> 0으로 완료된 경우 adas_summary.png 반환
+    if (lcCompleted && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
       return "/handle/adas_summary.png";
     }
 
-    // 일반적인 경우 signal-2.png 반환
-    if (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61) {
+    // showHdaBar가 true일 때만 signal-2.png 반환 (5초 딜레이 후)
+    if (showHdaBar && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
       return "/handle/signal-2.png";
     }
 
