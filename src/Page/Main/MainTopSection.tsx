@@ -108,6 +108,11 @@ const MainTopSection = ({
       return null;
     }
 
+    // SteeringOverrideActive가 true면 overide.png 반환
+    if (dynamicData.SteeringOverrideActive) {
+      return "/handle/overide.png";
+    }
+
     // lcProgressBar가 100 -> 0으로 완료된 경우 adas_summary.png 반환
     if (lcCompleted && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
       return "/handle/adas_summary.png";
@@ -132,8 +137,20 @@ const MainTopSection = ({
     return null;
   };
 
+  // eorLevel 값에 따른 이미지 경로 결정
+  const getEorLevelImage = () => {
+    const eorLevel = dynamicData.eorLevel;
+    if (eorLevel === 1) {
+      return "/handle/adas_summary.png";
+    } else if (eorLevel === 2) {
+      return "/handle/signal-2.png";
+    }
+    return null;
+  };
+
   const signalImage = getSignalImage();
   const horLevelImage = getHorLevelImage();
+  const eorLevelImage = getEorLevelImage();
 
   return (
     <div className="w-full h-[142px] bg-black flex justify-center items-end gap-[280px] relative">
@@ -146,8 +163,8 @@ const MainTopSection = ({
         />
       )}
 
-      {/* rmfLevel이 1 이상일 때 hor2-2.png 표시 */}
-      {dynamicData.rmfLevel >= 1 && (
+      {/* rmfLevel 또는 dcaLevel이 1 이상일 때 hor2-2.png 표시 (rmfLevel일 경우 Velocity가 0이 아닐 때만) */}
+      {((dynamicData.rmfLevel >= 1 && dynamicData.Velocity !== 0) || dynamicData.dcaLevel >= 1) && (
         <img
           src="/handle/hor2-2.png"
           alt="hor-level-img"
@@ -155,12 +172,21 @@ const MainTopSection = ({
         />
       )}
 
-      {/* etc_signal 값에 따른 신호 이미지 (horLevel이 없을 때) */}
-      {!horLevelImage && signalImage && (
+      {/* eorLevel 값에 따른 이미지 (horLevel이 없고, dcaLevel/rmfLevel이 0일 때) */}
+      {!horLevelImage && eorLevelImage && dynamicData.dcaLevel === 0 && dynamicData.rmfLevel === 0 && (
+        <img
+          src={eorLevelImage}
+          alt="eor-level-img"
+          className={`absolute -translate-x-[200px] z-50 w-[100px] ${eorLevelImage === "/handle/adas_summary.png" ? "-translate-y-0" : "-translate-y-[22px]"}`}
+        />
+      )}
+
+      {/* etc_signal 값에 따른 신호 이미지 (horLevel, eorLevel이 없을 때) */}
+      {!horLevelImage && !eorLevelImage && signalImage && (
         <img
           src={signalImage}
           alt="signal-img"
-          className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-[22px]"
+          className={`absolute -translate-x-[200px] z-50 w-[100px] ${(signalImage === "/handle/adas_summary.png" || signalImage === "/handle/overide.png") ? "-translate-y-0" : "-translate-y-[22px]"}`}
         />
       )}
 
@@ -182,8 +208,8 @@ const MainTopSection = ({
         />
       )}
 
-      {/* HDA4가 활성화되고 horLevel, etc_signal, rmfLevel 조건이 아니고, left/right auto 아닐 때만 표시 */}
-      {dynamicData.EnableHDA4 && !horLevelImage && !signalImage && dynamicData.rmfLevel < 1 && !showLeftAuto && !showRightAuto && (
+      {/* HDA4가 활성화되고 horLevel, eorLevel, etc_signal, rmfLevel, dcaLevel 조건이 아니고, left/right auto 아닐 때만 표시 */}
+      {dynamicData.EnableHDA4 && !horLevelImage && !eorLevelImage && !signalImage && dynamicData.rmfLevel < 1 && dynamicData.dcaLevel < 1 && !showLeftAuto && !showRightAuto && (
         <img
           src="/handle/adas_summary.png"
           alt="left-light-img.png"
@@ -191,8 +217,8 @@ const MainTopSection = ({
         />
       )}
 
-      {/* HDA2가 활성화되고 horLevel, etc_signal, rmfLevel 조건이 아닐 때만 표시 */}
-      {dynamicData.EnableHDA2 && !horLevelImage && !signalImage && dynamicData.rmfLevel < 1 && (
+      {/* HDA2가 활성화되고 horLevel, eorLevel, etc_signal, rmfLevel, dcaLevel 조건이 아닐 때만 표시 */}
+      {dynamicData.EnableHDA2 && !horLevelImage && !eorLevelImage && !signalImage && dynamicData.rmfLevel < 1 && dynamicData.dcaLevel < 1 && (
         <img
           src="/handle/handle_green.png"
           alt="left-light-img.png"
@@ -200,14 +226,17 @@ const MainTopSection = ({
         />
       )}
 
-      {/* 100 텍스트는 rmfLevel이 1 미만일 때만 표시 */}
-      {dynamicData.rmfLevel < 1 && (
+      {/* 100 텍스트 표시 (rmfLevel >= 1 && Velocity === 0 일 때는 숨김) */}
+      {!(dynamicData.rmfLevel >= 1 && dynamicData.Velocity === 0) && (
         <p
-          className={`absolute z-50 font-bold text-[42px] -translate-x-[100px] -translate-y-3 ${dynamicData.EnableHDA2
-            ? "text-[#06BA15]"
-            : dynamicData.EnableHDA4
-              ? "text-[#0064FF]"
-              : "text-black"
+          className={`absolute z-50 font-bold text-[42px] -translate-x-[100px] -translate-y-3 ${
+            dynamicData.AutonomousAccelPush
+              ? "text-[#9b9b9b] blink-animation"
+              : dynamicData.EnableHDA2
+                ? "text-[#06BA15]"
+                : dynamicData.EnableHDA4
+                  ? "text-[#0064FF]"
+                  : "text-black"
             }`}
         >
           100
