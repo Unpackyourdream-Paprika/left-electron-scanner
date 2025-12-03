@@ -87,17 +87,17 @@ const MainTopSection = ({
     setPrevLcProgressBar(currentProgress);
   }, [dynamicData.lcProgressBar, prevLcProgressBar]);
 
-  // lcDirection이 0이 아닐 때 깜빡이 사운드 재생
+  // lcDirection이 0이 아니거나 bEmergencyFlasher가 true일 때 깜빡이 사운드 재생
   useEffect(() => {
-    if (indicatorAudioRef && dynamicData.lcDirection !== 0) {
+    if (indicatorAudioRef && (dynamicData.lcDirection !== 0 || dynamicData.bEmergencyFlasher)) {
       indicatorAudioRef.play().catch(error => {
         console.log('Audio play failed:', error);
       });
-    } else if (indicatorAudioRef && dynamicData.lcDirection === 0) {
+    } else if (indicatorAudioRef && dynamicData.lcDirection === 0 && !dynamicData.bEmergencyFlasher) {
       indicatorAudioRef.pause();
       indicatorAudioRef.currentTime = 0;
     }
-  }, [dynamicData.lcDirection, indicatorAudioRef]);
+  }, [dynamicData.lcDirection, dynamicData.bEmergencyFlasher, indicatorAudioRef]);
 
   // etc_signal 값에 따른 이미지 경로 결정
   const getSignalImage = () => {
@@ -141,6 +141,15 @@ const MainTopSection = ({
       {horLevelImage && dynamicData.rmfLevel < 1 && (
         <img
           src={horLevelImage}
+          alt="hor-level-img"
+          className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-[22px]"
+        />
+      )}
+
+      {/* rmfLevel이 1 이상일 때 hor2-2.png 표시 */}
+      {dynamicData.rmfLevel >= 1 && (
+        <img
+          src="/handle/hor2-2.png"
           alt="hor-level-img"
           className="absolute -translate-x-[200px] z-50 w-[100px] -translate-y-[22px]"
         />
@@ -205,8 +214,8 @@ const MainTopSection = ({
         </p>
       )}
 
-      {/* 왼쪽 깜빡이 */}
-      {dynamicData.lcDirection === 1 && (
+      {/* 왼쪽 깜빡이 - lcDirection이 1이거나 bEmergencyFlasher가 true일 때 */}
+      {(dynamicData.lcDirection === 1 || dynamicData.bEmergencyFlasher) && (
         <img
           src="/arrow/left-sign.svg"
           alt="left-turn-signal"
@@ -228,8 +237,8 @@ const MainTopSection = ({
         className="z-50 w-[80px]"
       />
 
-      {/* 오른쪽 깜빡이 */}
-      {dynamicData.lcDirection === 2 && (
+      {/* 오른쪽 깜빡이 - lcDirection이 2이거나 bEmergencyFlasher가 true일 때 */}
+      {(dynamicData.lcDirection === 2 || dynamicData.bEmergencyFlasher) && (
         <img
           src="/arrow/right-sign.svg"
           alt="right-turn-signal"
