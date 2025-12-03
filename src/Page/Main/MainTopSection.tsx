@@ -280,12 +280,12 @@ const MainTopSection = ({
         <img src="/top/bar_red.png" className="absolute z-1" />
       )}
 
-      {/* HDA4가 활성화되고 DCA, RMF 레벨이 1 미만이고, showHda4BarTwo가 true일 때 표시 */}
-      {dynamicData.EnableHDA4 && dynamicData.dcaLevel < 1 && dynamicData.rmfLevel < 1 && showHda4BarTwo && (
+      {/* HDA4가 활성화되고 DCA, RMF 레벨이 1 미만이고, eorLevel이 2가 아니고, showHda4BarTwo가 true일 때 표시 */}
+      {dynamicData.EnableHDA4 && dynamicData.dcaLevel < 1 && dynamicData.rmfLevel < 1 && dynamicData.eorLevel !== 2 && showHda4BarTwo && (
         <img src="/top/HDA4-bar-two.png" className="absolute z-1" />
       )}
-      {/* EnableHDA4이고 etc_signal이 21, 31, 41, 51, 81일 때 5초 후 표시 */}
-      {showHdaBar && (
+      {/* EnableHDA4이고 etc_signal이 21, 31, 41, 51, 81일 때 5초 후 표시 또는 eorLevel이 2일 때 표시 */}
+      {(showHdaBar || dynamicData.eorLevel === 2) && (
         <img src="/top/hda-bar.png" className="absolute z-1 w-full" />
       )}
     </div>
