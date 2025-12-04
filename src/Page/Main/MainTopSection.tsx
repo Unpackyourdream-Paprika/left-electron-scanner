@@ -57,7 +57,7 @@ const MainTopSection = ({
 
   // etc_signal이 특정 값이면 5초 후에 hda-bar 표시, HDA4-bar-two 숨김
   useEffect(() => {
-    if (dynamicData.EnableHDA4 && [21, 31, 41, 51, 81].includes(dynamicData.etc_signal)) {
+    if (dynamicData.EnableHDA4 && [21, 31, 41, 42, 51, 81].includes(dynamicData.etc_signal)) {
       const timer = setTimeout(() => {
         setShowHdaBar(true);
         setShowHda4BarTwo(false);
@@ -113,8 +113,8 @@ const MainTopSection = ({
       return "/handle/overide.png";
     }
 
-    // lcProgressBar가 100 -> 0으로 완료된 경우 adas_summary.png 반환
-    if (lcCompleted && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
+    // lcProgressBar가 100 -> 0으로 완료된 경우 adas_summary.png 반환 (EnableHDA4일 때만)
+    if (dynamicData.EnableHDA4 && lcCompleted && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
       return "/handle/adas_summary.png";
     }
 
@@ -137,8 +137,10 @@ const MainTopSection = ({
     return null;
   };
 
-  // eorLevel 값에 따른 이미지 경로 결정
+  // eorLevel 값에 따른 이미지 경로 결정 (EnableHDA4일 때만)
   const getEorLevelImage = () => {
+    if (!dynamicData.EnableHDA4) return null;
+
     const eorLevel = dynamicData.eorLevel;
     if (eorLevel === 1) {
       return "/handle/adas_summary.png";
