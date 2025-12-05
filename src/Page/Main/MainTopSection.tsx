@@ -57,7 +57,7 @@ const MainTopSection = ({
 
   // etc_signal이 특정 값이면 5초 후에 hda-bar 표시, HDA4-bar-two 숨김
   useEffect(() => {
-    if (dynamicData.EnableHDA4 && [21, 31, 41, 42, 51, 81].includes(dynamicData.etc_signal)) {
+    if (dynamicData.EnableHDA4 && [21, 31, 41, 42, 51, 61, 81].includes(dynamicData.etc_signal)) {
       const timer = setTimeout(() => {
         setShowHdaBar(true);
         setShowHda4BarTwo(false);
@@ -231,8 +231,7 @@ const MainTopSection = ({
       {/* 100 텍스트 표시 (rmfLevel >= 1 && Velocity === 0 일 때는 숨김) */}
       {!(dynamicData.rmfLevel >= 1 && dynamicData.Velocity === 0) && (
         <p
-          className={`absolute z-50 font-bold text-[42px] -translate-x-[100px] -translate-y-3 ${
-            dynamicData.AutonomousAccelPush
+          className={`absolute z-50 font-bold text-[42px] -translate-x-[100px] -translate-y-3 ${dynamicData.AutonomousAccelPush
               ? "text-[#9b9b9b] blink-animation"
               : dynamicData.EnableHDA2
                 ? "text-[#06BA15]"
