@@ -103,6 +103,11 @@ const MainTopSection = ({
   const getSignalImage = () => {
     const signalValue = dynamicData.etc_signal;
 
+    // showHdaBar가 true일 때만 signal-2.png 반환 (5초 딜레이 후 - 최우선)
+    if (showHdaBar && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
+      return "/handle/signal-2.png";
+    }
+
     // lcDirection이 1 또는 2일 때는 signalImage 반환하지 않음 (left-auto, right-auto가 표시되도록)
     if (dynamicData.lcDirection === 1 || dynamicData.lcDirection === 2) {
       return null;
@@ -116,11 +121,6 @@ const MainTopSection = ({
     // lcProgressBar가 100 -> 0으로 완료된 경우 adas_summary.png 반환 (EnableHDA4일 때만)
     if (dynamicData.EnableHDA4 && lcCompleted && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
       return "/handle/adas_summary.png";
-    }
-
-    // showHdaBar가 true일 때만 signal-2.png 반환 (5초 딜레이 후)
-    if (showHdaBar && (signalValue === 21 || signalValue === 31 || signalValue === 42 || signalValue === 61)) {
-      return "/handle/signal-2.png";
     }
 
     return null;
